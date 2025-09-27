@@ -14,4 +14,4 @@ python
 streamlit
 Google colab
 
-🚀 Streamlit App:https://strokepredictionproject-dqsdw6b7ybujxhns6h2axv.streamlit.app/
+🚀 Streamlit App: https://strokepredictionproject-dqsdw6b7ybujxhns6h2axv.streamlit.app/
