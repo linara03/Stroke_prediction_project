@@ -22,7 +22,7 @@ model, scalar, df = get_data()
 # =========================
 # Page Config
 # =========================
-st.set_page_config(page_title="🧠 Stroke Predictor", layout="centered")
+st.set_page_config(page_title="Stroke Predictor", layout="centered")
 
 # =========================
 # Professional CSS Theme
@@ -100,7 +100,7 @@ st.markdown(
 st.markdown(
     """
     <div style="text-align: center; padding: 15px;">
-        <h1>🧠 Stroke Predictor</h1>
+        <h1>Stroke Predictor</h1>
         <p>Fill in the information below to <b>predict your risk of stroke</b>.</p>
     </div>
     """,
