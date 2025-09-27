@@ -6,9 +6,6 @@ import numpy as np
 import random
 import sklearn
 
-# =========================
-# Load model & dataset
-# =========================
 def get_data():
     model, scalar = pickle.load(open('stroke_mdl.pkl','rb'))
     df = pd.read_csv('stroke_dataset.csv')
@@ -19,14 +16,10 @@ def YesNo(n):
 
 model, scalar, df = get_data()
 
-# =========================
-# Page Config
-# =========================
+
 st.set_page_config(page_title="Stroke Predictor", layout="centered")
 
-# =========================
-# Professional CSS Theme
-# =========================
+
 st.markdown(
     """
     <style>
@@ -94,9 +87,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# =========================
-# Title
-# =========================
+
 st.markdown(
     """
     <div style="text-align: center; padding: 15px;">
@@ -107,9 +98,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# =========================
-# User Inputs
-# =========================
+
 age = st.slider('Age', 0, 100, 50)
 sex = st.radio("Gender", ["Male", "Female"])
 hypertension = st.radio("Hypertension", ["Yes","No"])
@@ -138,9 +127,7 @@ user_values = [[
 
 st.markdown("---")
 
-# =========================
-# Prediction
-# =========================
+
 if st.button("🔍 Predict My Risk"):
     prob = model.predict_proba(scalar.transform(user_values))[0][1]
     percentage = round(prob * 100, 2)
