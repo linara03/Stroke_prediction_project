@@ -75,7 +75,6 @@ if st.button('Predict'):
         - Monitor your blood pressure and glucose regularly  
         - Start moderate exercise (walking, yoga, etc.)  
         - Reduce alcohol consumption and quit smoking  
-        - Improve diet: more vegetables, fruits, and whole grains  
         """)
     else:
         st.success("✅ Low Risk of Stroke")
