@@ -52,10 +52,37 @@ smoking_dict={key:value for key, value in zip(df['Smoking_Status'].unique(), val
 user_values=[[age,sex,YesNo(hypertension),YesNo(heart_disease),avg_gl_level,bmi,smoking_dict.get(smoking_status),alcohol_intake,blood_pressure,cholesterol,YesNo(family_history),mri_result]]
 
 if st.button('Predict'):
-    result=model.predict(scalar.transform(user_values))
-    risk="The stroke risk is "
-    if result==1:
-        risk=risk+"high"
+    # Get probability instead of just class
+    prob = model.predict_proba(scalar.transform(user_values))[0][1]  # Probability of stroke
+    percentage = round(prob * 100, 2)
+
+    st.subheader(f"Predicted Stroke Risk: {percentage}%")
+
+    # Advice based on risk level
+    if percentage >= 60:
+        st.error("⚠️ High Risk of Stroke")
+        st.write("""
+        - Please **consult a doctor immediately**  
+        - Get a full medical check-up (blood pressure, glucose, cholesterol)  
+        - Follow prescribed medication if any  
+        - Avoid smoking and alcohol completely  
+        - Maintain a healthy diet and reduce salt intake  
+        """)
+    elif 30 <= percentage < 60:
+        st.warning("⚠️ Moderate Risk of Stroke")
+        st.write("""
+        - Consider visiting a doctor for preventive screening  
+        - Monitor your blood pressure and glucose regularly  
+        - Start moderate exercise (walking, yoga, etc.)  
+        - Reduce alcohol consumption and quit smoking  
+        - Improve diet: more vegetables, fruits, and whole grains  
+        """)
     else:
-        risk=risk+"low"
-    st.subheader(risk)
+        st.success("✅ Low Risk of Stroke")
+        st.write("""
+        - Maintain a **healthy lifestyle**  
+        - Exercise regularly (30 mins a day)  
+        - Keep blood pressure, glucose, and cholesterol in check  
+        - Avoid excessive smoking/alcohol  
+        - Go for routine health check-ups once a year  
+        """)
