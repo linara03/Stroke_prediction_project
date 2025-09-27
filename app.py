@@ -25,83 +25,69 @@ model, scalar, df = get_data()
 st.set_page_config(page_title="🧠 Stroke Predictor", layout="centered")
 
 # =========================
-# Custom CSS for Styling & Animations
+# Professional CSS Theme
 # =========================
 st.markdown(
     """
     <style>
     /* Page background */
     .stApp {
-        background: linear-gradient(135deg, #f0f9ff, #e0f7fa);
+        background: #f9f9f9;
         font-family: 'Segoe UI', sans-serif;
-        animation: fadeIn 1.2s ease-in;
+        color: #333333;
+        animation: fadeIn 1s ease-in;
     }
 
-    /* Fade-in animation */
+    /* Fade-in */
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
-    /* Title styling */
+    /* Title */
     h1 {
-        font-size: 40px !important;
+        font-size: 36px !important;
         color: #2E7D32 !important;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-        animation: pulse 2s infinite;
+        font-weight: 600 !important;
+        margin-bottom: 0.5em;
     }
 
-    /* Pulse animation for title */
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.03); }
-        100% { transform: scale(1); }
+    p {
+        font-size: 16px;
+        color: #555555;
     }
 
-    /* Sliders */
-    .stSlider label {
-        font-size: 18px;
-        font-weight: bold;
-        color: #00695C;
-    }
-    .stSlider .css-14xtw13 {
-        background: linear-gradient(to right, #4CAF50, #81C784);
-        border-radius: 10px;
+    /* Labels (sliders, radios, etc.) */
+    label {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #333333 !important;
     }
 
-    /* Radio buttons */
-    .stRadio label {
-        font-size: 17px;
-        font-weight: 500;
-        color: #1565C0;
-    }
-
-    /* Number input */
-    .stNumberInput label {
-        font-size: 17px;
-        font-weight: bold;
-        color: #AD1457;
-    }
-
-    /* Selectbox */
-    .stSelectbox label {
-        font-size: 17px;
-        font-weight: bold;
-        color: #4527A0;
+    /* Inputs */
+    .stSlider, .stRadio, .stSelectbox, .stNumberInput {
+        margin-bottom: 1.2em;
     }
 
     /* Prediction box */
     .prediction-box {
-        animation: slideIn 1s ease;
-        border-radius: 12px;
+        border-radius: 10px;
         padding: 20px;
         background: #ffffff;
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+        box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
     }
 
-    @keyframes slideIn {
-        from { transform: translateY(30px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+    .prediction-box h2 {
+        margin: 0;
+        font-size: 24px;
+        color: #2E7D32;
+        font-weight: 700;
+    }
+
+    /* Streamlit success/warning/error boxes */
+    .stAlert {
+        font-size: 15px;
     }
     </style>
     """,
@@ -113,11 +99,9 @@ st.markdown(
 # =========================
 st.markdown(
     """
-    <div style="text-align: center; padding: 20px;">
+    <div style="text-align: center; padding: 15px;">
         <h1>🧠 Stroke Predictor</h1>
-        <p style="font-size:18px; color:gray;">
-            Fill in the information below to <b>predict your risk of stroke</b>.
-        </p>
+        <p>Fill in the information below to <b>predict your risk of stroke</b>.</p>
     </div>
     """,
     unsafe_allow_html=True
@@ -164,7 +148,7 @@ if st.button("🔍 Predict My Risk"):
     st.markdown(
         f"""
         <div class="prediction-box" style="text-align:center;">
-            <h2 style="color:#4CAF50;"> Predicted Stroke Risk: {percentage}% </h2>
+            <h2>Predicted Stroke Risk: {percentage}%</h2>
         </div>
         """,
         unsafe_allow_html=True
@@ -175,11 +159,11 @@ if st.button("🔍 Predict My Risk"):
         st.markdown(
             """
             **Recommended Actions:**
-            - 🏥 Consult a doctor immediately  
-            - 💉 Get a full medical check-up (blood pressure, glucose, cholesterol)  
-            - 💊 Follow prescribed medication if any  
-            - 🚭 Avoid smoking and alcohol completely  
-            - 🥗 Maintain a healthy diet and reduce salt intake  
+            - Consult a doctor immediately  
+            - Get a full medical check-up (blood pressure, glucose, cholesterol)  
+            - Follow prescribed medication if any  
+            - Avoid smoking and alcohol completely  
+            - Maintain a healthy diet and reduce salt intake  
             """
         )
     elif 30 <= percentage < 60:
@@ -187,10 +171,10 @@ if st.button("🔍 Predict My Risk"):
         st.markdown(
             """
             **Recommended Actions:**
-            - 🩺 Consider visiting a doctor for preventive screening  
-            - 📉 Monitor your blood pressure and glucose regularly  
-            - 🏃 Start moderate exercise (walking, yoga, etc.)  
-            - 🍷 Reduce alcohol consumption and quit smoking  
+            - Consider visiting a doctor for preventive screening  
+            - Monitor your blood pressure and glucose regularly  
+            - Start moderate exercise (walking, yoga, etc.)  
+            - Reduce alcohol consumption and quit smoking  
             """
         )
     else:
@@ -198,10 +182,10 @@ if st.button("🔍 Predict My Risk"):
         st.markdown(
             """
             **Recommended Actions:**
-            - 🥦 Maintain a healthy lifestyle  
-            - 🏋️ Exercise regularly (30 mins a day)  
-            - 🩸 Keep blood pressure, glucose, and cholesterol in check  
-            - 🚭 Avoid excessive smoking/alcohol  
-            - 🔄 Go for routine health check-ups once a year  
+            - Maintain a healthy lifestyle  
+            - Exercise regularly (30 mins a day)  
+            - Keep blood pressure, glucose, and cholesterol in check  
+            - Avoid excessive smoking/alcohol  
+            - Go for routine health check-ups once a year  
             """
         )
