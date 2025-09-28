@@ -103,14 +103,21 @@ age = st.slider('Age', 0, 100, 50)
 sex = st.radio("Gender", ["Male", "Female"])
 hypertension = st.radio("Hypertension", ["Yes","No"])
 heart_disease = st.radio("Heart Disease", ["Yes","No"])
-avg_gl_level = st.slider('Average Glucose Level', 0, 300, value=int(df['Average_Glucose_Level'].mean()))
-bmi = st.slider('Body Mass Index (BMI)', 0, 70, value=int(df['BMI'].mean()))
+
+avg_gl_level = st.selectbox('Average Glucose Level ', df['Average_Glucose_Level'].unique())
+bmi = st.selectbox('Body Mass Index (BMI) ', df['BMI'].unique())
+
 smoking_status = st.selectbox('Smoking Status', df['Smoking_Status'].unique())
 alcohol_intake = st.number_input("Alcohol Intake (units per week)", min_value=0, max_value=50, value=0)
 blood_pressure = st.slider('Blood Pressure (mmHg)', 50, 200, value=int(df['Blood_Pressure'].mean()))
 cholesterol = st.slider('Cholesterol Level (mg/dL)', 100, 400, value=int(df['Cholesterol'].mean()))
 family_history = st.radio("Family History of Stroke", ["Yes", "No"])
 mri_result = st.selectbox('MRI Result', df['MRI_Result'].unique())
+work_type = st.selectbox('Work Type', df['Work_Type'].unique())
+residence_type = st.selectbox('Residence ', df['Residence_Type'].unique())
+stress_level = st.slider('Stress_Level', 0, 10, 0)
+physical_activity = st.slider('Physical_Activity', 0, 20, 0)
+
 
 # Encode gender
 sex = 1 if sex == "Male" else 0
@@ -119,11 +126,22 @@ sex = 1 if sex == "Male" else 0
 value_list = [1, 2, 3, 4]
 smoking_dict = {key:value for key, value in zip(df['Smoking_Status'].unique(), value_list)}
 
+
+# Map working type
+value_list2 = [0,1, 2, 3, 4]
+work_dict = {key:value for key, value in zip(df['Work_Type'].unique(), value_list2)}
+
+# Map Residence_Type
+residence_dict = {key: idx for idx, key in enumerate(df['Residence_Type'].unique())}
+residence_encoded = residence_dict.get(residence_type)
+
+
 user_values = [[
     age, sex, YesNo(hypertension), YesNo(heart_disease), avg_gl_level, bmi,
     smoking_dict.get(smoking_status), alcohol_intake, blood_pressure,
-    cholesterol, YesNo(family_history), mri_result
+    cholesterol, YesNo(family_history), mri_result,residence_encoded,stress_level,physical_activity,work_dict.get(work_type)
 ]]
+
 
 st.markdown("---")
 
