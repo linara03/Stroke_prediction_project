@@ -5,7 +5,7 @@ import streamlit as st
 st.title("Stroke Prediction System")
 
 # Load the best model
-with open("random_forest.pkl", "rb") as f:  # <-- Change to your chosen best model
+with open("models/random_forest.pkl", "rb") as f:  # <-- Final chosen model
     model_data = pickle.load(f)
     model = model_data['model']
     scaler = model_data['scaler']
