@@ -6,15 +6,19 @@ import numpy as np
 import random
 import sklearn
 
+
+
+
 def get_data():
-    model, scalar = pickle.load(open('stroke_mdl.pkl','rb'))
+    model, scalar, label_encoder = pickle.load(open('stroke_mdl.pkl','rb'))
     df = pd.read_csv('stroke_dataset.csv')
-    return model, scalar, df
+    return model, scalar, label_encoder, df
 
 def YesNo(n):
     return 1 if n == 'Yes' else 0
 
-model, scalar, df = get_data()
+model, scalar, label_encoder, df = get_data()
+
 
 
 st.set_page_config(page_title="Stroke Predictor", layout="centered")
