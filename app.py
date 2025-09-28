@@ -104,19 +104,29 @@ sex = st.radio("Gender", ["Male", "Female"])
 hypertension = st.radio("Hypertension", ["Yes","No"])
 heart_disease = st.radio("Heart Disease", ["Yes","No"])
 
-avg_gl_level = st.selectbox('Average Glucose Level ', df['Average_Glucose_Level'].unique())
-bmi = st.selectbox('Body Mass Index (BMI) ', df['BMI'].unique())
+bmi = st.number_input("Body Mass Index (BMI)")
+
+avg_gl_level = st.number_input("Average Glucose Level")
+
 
 smoking_status = st.selectbox('Smoking Status', df['Smoking_Status'].unique())
 alcohol_intake = st.number_input("Alcohol Intake (units per week)", min_value=0, max_value=50, value=0)
-blood_pressure = st.slider('Blood Pressure (mmHg)', 50, 200, value=int(df['Blood_Pressure'].mean()))
-cholesterol = st.slider('Cholesterol Level (mg/dL)', 100, 400, value=int(df['Cholesterol'].mean()))
+
+blood_pressure = st.number_input("Blood Pressure (mmHg)")
+cholesterol = st.number_input("Cholesterol Level (mg/dL)")
+
+
 family_history = st.radio("Family History of Stroke", ["Yes", "No"])
-mri_result = st.selectbox('MRI Result', df['MRI_Result'].unique())
+
+mri_result = st.number_input("MRI Result")
+
+
 work_type = st.selectbox('Work Type', df['Work_Type'].unique())
 residence_type = st.selectbox('Residence ', df['Residence_Type'].unique())
-stress_level = st.slider('Stress_Level', 0, 10, 0)
-physical_activity = st.slider('Physical_Activity', 0, 20, 0)
+stress_level = st.slider('Stress Level', 0, 10, 0)
+
+physical_activity = st.number_input("Physical Activity(hrs/week)")
+
 
 
 # Encode gender
@@ -159,38 +169,61 @@ if st.button("🔍 Predict My Risk"):
         unsafe_allow_html=True
     )
 
-    if percentage >= 60:
-        st.error("⚠️ High Risk of Stroke")
-        st.markdown(
-            """
-            **Recommended Actions:**
-            - Consult a doctor immediately  
-            - Get a full medical check-up (blood pressure, glucose, cholesterol)  
-            - Follow prescribed medication if any  
-            - Avoid smoking and alcohol completely  
-            - Maintain a healthy diet and reduce salt intake  
-            """
-        )
-    elif 30 <= percentage < 60:
-        st.warning("⚠️ Moderate Risk of Stroke")
-        st.markdown(
-            """
-            **Recommended Actions:**
-            - Consider visiting a doctor for preventive screening  
-            - Monitor your blood pressure and glucose regularly  
-            - Start moderate exercise (walking, yoga, etc.)  
-            - Reduce alcohol consumption and quit smoking  
-            """
-        )
-    else:
-        st.success("✅ Low Risk of Stroke")
+    # WHO-based thresholds
+    if percentage < 5:
+        st.success("✅ Very Low Risk of Stroke (<5%)")
         st.markdown(
             """
             **Recommended Actions:**
             - Maintain a healthy lifestyle  
             - Exercise regularly (30 mins a day)  
+            - Routine health check-ups once a year  
+            """
+        )
+
+    elif 5 <= percentage < 10:
+        st.success("✅ Low Risk of Stroke (5–10%)")
+        st.markdown(
+            """
+            **Recommended Actions:**
             - Keep blood pressure, glucose, and cholesterol in check  
-            - Avoid excessive smoking/alcohol  
-            - Go for routine health check-ups once a year  
+            - Exercise and eat a balanced diet  
+            - Avoid smoking and excess alcohol  
+            """
+        )
+
+    elif 10 <= percentage < 20:
+        st.warning("⚠️ Moderate Risk of Stroke (10–20%)")
+        st.markdown(
+            """
+            **Recommended Actions:**
+            - Consider preventive medical screening  
+            - Monitor blood pressure and glucose regularly  
+            - Increase physical activity  
+            - Reduce alcohol and quit smoking  
+            """
+        )
+
+    elif 20 <= percentage < 30:
+        st.error("⚠️ High Risk of Stroke (20–30%)")
+        st.markdown(
+            """
+            **Recommended Actions:**
+            - Visit a doctor for a detailed evaluation  
+            - Follow prescribed medication if advised  
+            - Adopt strict lifestyle changes (diet, exercise, no smoking)  
+            """
+        )
+
+    else:  # ≥30%
+        st.error("🚨 Very High Risk of Stroke (≥30%)")
+        st.markdown(
+            """
+            **Recommended Actions:**
+            - Consult a doctor immediately  
+            - Get a full medical check-up (BP, glucose, cholesterol)  
+            - Follow treatment strictly if prescribed  
+            - Avoid smoking/alcohol completely  
+            - Maintain a heart-healthy diet and reduce salt intake  
             """
         )
