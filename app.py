@@ -1,233 +1,70 @@
 import pickle
-from sklearn.preprocessing import StandardScaler
-import streamlit as st
 import pandas as pd
-import numpy as np
-import random
-import sklearn
+import streamlit as st
 
+st.title("Stroke Prediction System")
 
+# Load the best model
+with open("random_forest.pkl", "rb") as f:  # <-- Change to your chosen best model
+    model_data = pickle.load(f)
+    model = model_data['model']
+    scaler = model_data['scaler']
+    feature_names = model_data['features']
+    encoders = model_data['encoders']
 
+# Input form
+st.subheader("Enter Details")
 
-def get_data():
-    model, scalar, label_encoder = pickle.load(open('stroke_mdl.pkl','rb'))
-    df = pd.read_csv('stroke_dataset.csv')
-    return model, scalar, label_encoder, df
+# Create two columns for better layout
+col1, col2 = st.columns(2)
 
-def YesNo(n):
-    return 1 if n == 'Yes' else 0
+with col1:
+    age = st.number_input("Age", min_value=0, max_value=120, value=50)
+    sex = st.selectbox("Sex", ["Female", "Male"])
+    hypertension = st.selectbox("Do you have Hypertension?", ["No", "Yes"])
+    heart_disease = st.selectbox("Do you have Heart Disease?", ["No", "Yes"])
+    ever_married = st.selectbox("Ever Married", ["No", "Yes"])
+    work_type = st.selectbox("Work Type", ["Children", "Govt_job", "Never_worked", "Private", "Self-employed"])
+    residence_type = st.selectbox("Residence Type", ["Rural", "Urban"])
+    avg_glucose_level = st.number_input("Average Glucose Level", min_value=40.0, max_value=300.0, value=100.0)
 
-model, scalar, label_encoder, df = get_data()
+with col2:
+    bmi = st.number_input("BMI", min_value=10.0, max_value=60.0, value=25.0)
+    smoking_status = st.selectbox("Smoking Status", ["Currently", "Formerly", "Never", "Unknown"])
+    physical_activity = st.number_input("Hours of Physical Activity per Week", min_value=0.0, max_value=50.0, value=5.0)
+    alcohol_intake = st.number_input("Times consuming Alcohol per Week", min_value=0, max_value=14, value=0)
+    stress_level = st.slider("Stress Level (0-10 scale)", min_value=0, max_value=10, value=5)
+    blood_pressure = st.number_input("Blood Pressure (mmHg)", min_value=80, max_value=200, value=120)
+    cholesterol = st.number_input("Cholesterol Level", min_value=100, max_value=300, value=200)
+    family_history = st.selectbox("Family History of Stroke", ["No", "Yes"])
+    mri_result = st.number_input("MRI Result", min_value=0.0, max_value=100.0, value=50.0)
 
-
-
-st.set_page_config(page_title="Stroke Predictor", layout="centered")
-
-
-st.markdown(
-    """
-    <style>
-    /* Page background */
-    .stApp {
-        background: #f9f9f9;
-        font-family: 'Segoe UI', sans-serif;
-        color: #333333;
-        animation: fadeIn 1s ease-in;
-    }
-
-    /* Fade-in */
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    /* Title */
-    h1 {
-        font-size: 36px !important;
-        color: #2E7D32 !important;
-        font-weight: 600 !important;
-        margin-bottom: 0.5em;
-    }
-
-    p {
-        font-size: 16px;
-        color: #555555;
-    }
-
-    /* Labels (sliders, radios, etc.) */
-    label {
-        font-size: 16px !important;
-        font-weight: 600 !important;
-        color: #333333 !important;
-    }
-
-    /* Inputs */
-    .stSlider, .stRadio, .stSelectbox, .stNumberInput {
-        margin-bottom: 1.2em;
-    }
-
-    /* Prediction box */
-    .prediction-box {
-        border-radius: 10px;
-        padding: 20px;
-        background: #ffffff;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .prediction-box h2 {
-        margin: 0;
-        font-size: 24px;
-        color: #2E7D32;
-        font-weight: 700;
-    }
-
-    /* Streamlit success/warning/error boxes */
-    .stAlert {
-        font-size: 15px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
-st.markdown(
-    """
-    <div style="text-align: center; padding: 15px;">
-        <h1>Stroke Predictor</h1>
-        <p>Fill in the information below to <b>predict your risk of stroke</b>.</p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-
-age = st.slider('Age', 0, 100, 50)
-sex = st.radio("Gender", ["Male", "Female"])
-hypertension = st.radio("Hypertension", ["Yes","No"])
-heart_disease = st.radio("Heart Disease", ["Yes","No"])
-
-bmi = st.number_input("Body Mass Index (BMI)")
-
-avg_gl_level = st.number_input("Average Glucose Level")
-
-
-smoking_status = st.selectbox('Smoking Status', df['Smoking_Status'].unique())
-alcohol_intake = st.number_input("Alcohol Intake (units per week)", min_value=0, max_value=50, value=0)
-
-blood_pressure = st.number_input("Blood Pressure (mmHg)")
-cholesterol = st.number_input("Cholesterol Level (mg/dL)")
-
-
-family_history = st.radio("Family History of Stroke", ["Yes", "No"])
-
-mri_result = st.number_input("MRI Result")
-
-
-work_type = st.selectbox('Work Type', df['Work_Type'].unique())
-residence_type = st.selectbox('Residence ', df['Residence_Type'].unique())
-stress_level = st.slider('Stress Level', 0, 10, 0)
-
-physical_activity = st.number_input("Physical Activity(hrs/week)")
-
-
-
-# Encode gender
-sex = 1 if sex == "Male" else 0
-
-# Map smoking status
-value_list = [1, 2, 3, 4]
-smoking_dict = {key:value for key, value in zip(df['Smoking_Status'].unique(), value_list)}
-
-
-# Map working type
-value_list2 = [0,1, 2, 3, 4]
-work_dict = {key:value for key, value in zip(df['Work_Type'].unique(), value_list2)}
-
-# Map Residence_Type
-residence_dict = {key: idx for idx, key in enumerate(df['Residence_Type'].unique())}
-residence_encoded = residence_dict.get(residence_type)
-
-
-user_values = [[
-    age, sex, YesNo(hypertension), YesNo(heart_disease), avg_gl_level, bmi,
-    smoking_dict.get(smoking_status), alcohol_intake, blood_pressure,
-    cholesterol, YesNo(family_history), mri_result,residence_encoded,stress_level,physical_activity,work_dict.get(work_type)
-]]
-
-
-st.markdown("---")
-
-
-if st.button("🔍 Predict My Risk"):
-    prob = model.predict_proba(scalar.transform(user_values))[0][1]
-    percentage = round(prob * 100, 2)
-
-    st.markdown(
-        f"""
-        <div class="prediction-box" style="text-align:center;">
-            <h2>Predicted Stroke Risk: {percentage}%</h2>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    # WHO-based thresholds
-    if percentage < 5:
-        st.success("✅ Very Low Risk of Stroke (<5%)")
-        st.markdown(
-            """
-            **Recommended Actions:**
-            - Maintain a healthy lifestyle  
-            - Exercise regularly (30 mins a day)  
-            - Routine health check-ups once a year  
-            """
-        )
-
-    elif 5 <= percentage < 10:
-        st.success("✅ Low Risk of Stroke (5–10%)")
-        st.markdown(
-            """
-            **Recommended Actions:**
-            - Keep blood pressure, glucose, and cholesterol in check  
-            - Exercise and eat a balanced diet  
-            - Avoid smoking and excess alcohol  
-            """
-        )
-
-    elif 10 <= percentage < 20:
-        st.warning("⚠️ Moderate Risk of Stroke (10–20%)")
-        st.markdown(
-            """
-            **Recommended Actions:**
-            - Consider preventive medical screening  
-            - Monitor blood pressure and glucose regularly  
-            - Increase physical activity  
-            - Reduce alcohol and quit smoking  
-            """
-        )
-
-    elif 20 <= percentage < 30:
-        st.error("⚠️ High Risk of Stroke (20–30%)")
-        st.markdown(
-            """
-            **Recommended Actions:**
-            - Visit a doctor for a detailed evaluation  
-            - Follow prescribed medication if advised  
-            - Adopt strict lifestyle changes (diet, exercise, no smoking)  
-            """
-        )
-
-    else:  # ≥30%
-        st.error("🚨 Very High Risk of Stroke (≥30%)")
-        st.markdown(
-            """
-            **Recommended Actions:**
-            - Consult a doctor immediately  
-            - Get a full medical check-up (BP, glucose, cholesterol)  
-            - Follow treatment strictly if prescribed  
-            - Avoid smoking/alcohol completely  
-            - Maintain a heart-healthy diet and reduce salt intake  
-            """
-        )
+# Add prediction button
+if st.button("🔮 Predict Stroke Risk", type="primary"):
+    # Convert Yes/No to 1/0 for binary features
+    hypertension_val = 1 if hypertension == "Yes" else 0
+    heart_disease_val = 1 if heart_disease == "Yes" else 0
+    
+    # Convert to dataframe with proper column names
+    input_data = pd.DataFrame([[
+        age, sex, hypertension_val, heart_disease_val, ever_married, work_type, residence_type,
+        avg_glucose_level, bmi, smoking_status, physical_activity, alcohol_intake,
+        stress_level, blood_pressure, cholesterol, family_history, mri_result
+    ]], columns=feature_names)
+    
+    # Encode categorical variables
+    for col, encoder in encoders.items():
+        if col in input_data.columns:
+            input_data[col] = encoder.transform(input_data[col])
+    
+    # Scale the data
+    scaled_data = scaler.transform(input_data)
+    prediction = model.predict(scaled_data)[0]
+    
+    st.subheader("🎯 Prediction Result")
+    if prediction == 1:
+        st.error("⚠️ The patient is at risk of Stroke.")
+        st.warning("Please consult with a healthcare professional for further evaluation.")
+    else:
+        st.success("✅ The patient is not at risk of Stroke.")
+        st.info("Continue maintaining a healthy lifestyle!")
