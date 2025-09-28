@@ -3,6 +3,48 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+import datetime
+
+def generate_pdf(stroke_risk_percentage, risk_level, user_inputs, file_path="stroke_report.pdf"):
+    """
+    Generate a PDF report for stroke prediction results.
+    """
+    doc = SimpleDocTemplate(file_path, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    # Title
+    story.append(Paragraph("🏥 Stroke Risk Prediction Report", styles['Title']))
+    story.append(Spacer(1, 12))
+
+    # Date & Time
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    story.append(Paragraph(f"📅 Report Generated: {current_time}", styles['Normal']))
+    story.append(Spacer(1, 12))
+
+    # Risk results
+    story.append(Paragraph(f"<b>Stroke Risk Percentage:</b> {stroke_risk_percentage:.2f}%", styles['Normal']))
+    story.append(Paragraph(f"<b>Risk Category:</b> {risk_level}", styles['Normal']))
+    story.append(Spacer(1, 12))
+
+    # User Inputs
+    story.append(Paragraph("<b>Patient Information:</b>", styles['Heading2']))
+    for key, value in user_inputs.items():
+        story.append(Paragraph(f"{key}: {value}", styles['Normal']))
+    story.append(Spacer(1, 12))
+
+    # Footer
+    story.append(Paragraph("⚠️ Note: This is an AI-based prediction. Consult a medical professional for final diagnosis.", styles['Italic']))
+
+    doc.build(story)
+    return file_path
+
+
+
+
 st.title("🏥 Stroke Risk Prediction System")
 st.markdown("---")
 
@@ -32,6 +74,8 @@ feature_names = model_package['feature_names']
 st.sidebar.header("Model Information")
 st.sidebar.info(f"Training Accuracy: {model_package.get('training_accuracy', 'N/A'):.2%}")
 st.sidebar.info(f"Test Accuracy: {model_package.get('test_accuracy', 'N/A'):.2%}")
+
+
 
 # Input form
 st.subheader("📋 Enter Patient Details")
@@ -170,6 +214,7 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
     st.markdown("---")
     st.subheader("📊 Prediction Results")
 
+
     # Main result with visual indicator
     if stroke_risk_percentage > 50:
         st.error(f"⚠️ **HIGH RISK OF STROKE**")
@@ -238,8 +283,34 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
 
         st.metric("Risk Level", f"{color} {risk_level}")
 
-    # Progress bar for risk
-    st.progress(min(stroke_prob, 1.0))
+        # ✅ Save results in session_state
+        st.session_state["stroke_risk_percentage"] = stroke_risk_percentage
+        st.session_state["risk_level"] = risk_level
+        st.session_state["user_inputs"] = {
+            "Age": age,
+            "Sex": sex,
+            "Hypertension": hypertension,
+            "Heart Disease": heart_disease,
+            "Glucose Level": avg_glucose_level,
+            "BMI": bmi,
+        }
+        st.success("Prediction completed! You can now generate a report.")
+
+# PDF download button
+if st.button("📄 Generate Report"):
+    if "stroke_risk_percentage" not in st.session_state:
+        st.error("⚠️ Please run the prediction first before generating a report.")
+    else:
+        pdf_path = generate_pdf(
+            st.session_state["stroke_risk_percentage"],
+            st.session_state["risk_level"],
+            st.session_state["user_inputs"]
+            )
+        with open(pdf_path, "rb") as pdf_file:
+            st.download_button("⬇️ Download PDF", pdf_file, file_name="stroke_report.pdf", mime="application/pdf")
+
+
+    
 
     # Additional information
     with st.expander("ℹ️ About This Prediction"):
