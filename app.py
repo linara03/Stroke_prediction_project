@@ -23,7 +23,6 @@ with col1:
     sex = st.selectbox("Sex", ["Female", "Male"])
     hypertension = st.selectbox("Do you have Hypertension?", ["No", "Yes"])
     heart_disease = st.selectbox("Do you have Heart Disease?", ["No", "Yes"])
-    ever_married = st.selectbox("Ever Married", ["No", "Yes"])
     work_type = st.selectbox("Work Type", ["Children", "Govt_job", "Never_worked", "Private", "Self-employed"])
     residence_type = st.selectbox("Residence Type", ["Rural", "Urban"])
     avg_glucose_level = st.number_input("Average Glucose Level", min_value=40.0, max_value=300.0, value=100.0)
@@ -46,6 +45,8 @@ if st.button("Predict Stroke Risk", type="primary"):
     heart_disease_val = 1 if heart_disease == "Yes" else 0
     
     # Convert to dataframe with proper column names
+    # Note: ever_married is set to default "No" since it was dropped from the model
+    ever_married = "No"  # Default value
     input_data = pd.DataFrame([[
         age, sex, hypertension_val, heart_disease_val, ever_married, work_type, residence_type,
         avg_glucose_level, bmi, smoking_status, physical_activity, alcohol_intake,
