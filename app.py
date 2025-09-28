@@ -40,7 +40,7 @@ with col2:
     mri_result = st.number_input("MRI Result", min_value=0.0, max_value=100.0, value=50.0)
 
 # Add prediction button
-if st.button("🔮 Predict Stroke Risk", type="primary"):
+if st.button("Predict Stroke Risk", type="primary"):
     # Convert Yes/No to 1/0 for binary features
     hypertension_val = 1 if hypertension == "Yes" else 0
     heart_disease_val = 1 if heart_disease == "Yes" else 0
