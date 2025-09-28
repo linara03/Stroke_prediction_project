@@ -7,10 +7,9 @@ st.title("Stroke Prediction System")
 # Load the best model
 with open("models/random_forest.pkl", "rb") as f:  # <-- Final chosen model
     model_data = pickle.load(f)
-    model = model_data['model']
-    scaler = model_data['scaler']
-    feature_names = model_data['features']
-    encoders = model_data['encoders']
+    model = model_data[0]  # RandomForest model
+    feature_names = model_data[1]  # Feature names list
+    # Note: This model doesn't have scaler or encoders
 
 # Input form
 st.subheader("Enter Details")
@@ -44,23 +43,24 @@ if st.button("Predict Stroke Risk", type="primary"):
     hypertension_val = 1 if hypertension == "Yes" else 0
     heart_disease_val = 1 if heart_disease == "Yes" else 0
     
-    # Convert to dataframe with proper column names
-    # Note: ever_married is set to default "No" since it was dropped from the model
-    ever_married = "No"  # Default value
+    # Convert categorical variables to numerical values
+    sex_val = 1 if sex == "Male" else 0
+    work_type_map = {"Private": 0, "Self-employed": 1, "Govt_job": 2, "Children": 3, "Never_worked": 4}
+    work_type_val = work_type_map[work_type]
+    residence_type_val = 1 if residence_type == "Urban" else 0
+    smoking_map = {"Never": 0, "Formerly": 1, "Currently": 2, "Unknown": 3}
+    smoking_status_val = smoking_map[smoking_status]
+    family_history_val = 1 if family_history == "Yes" else 0
+    
+    # Convert to dataframe with proper column names (16 features, no ever_married)
     input_data = pd.DataFrame([[
-        age, sex, hypertension_val, heart_disease_val, ever_married, work_type, residence_type,
-        avg_glucose_level, bmi, smoking_status, physical_activity, alcohol_intake,
-        stress_level, blood_pressure, cholesterol, family_history, mri_result
+        age, sex_val, hypertension_val, heart_disease_val, work_type_val, residence_type_val,
+        avg_glucose_level, bmi, smoking_status_val, physical_activity, alcohol_intake,
+        stress_level, blood_pressure, cholesterol, family_history_val, mri_result
     ]], columns=feature_names)
     
-    # Encode categorical variables
-    for col, encoder in encoders.items():
-        if col in input_data.columns:
-            input_data[col] = encoder.transform(input_data[col])
-    
-    # Scale the data
-    scaled_data = scaler.transform(input_data)
-    prediction = model.predict(scaled_data)[0]
+    # Make prediction directly (no scaling needed for Random Forest)
+    prediction = model.predict(input_data)[0]
     
     st.subheader("🎯 Prediction Result")
     if prediction == 1:
