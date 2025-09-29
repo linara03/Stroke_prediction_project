@@ -8,6 +8,12 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 import datetime
 
+
+# ✅ Reset session state on refresh
+if "reset_done" not in st.session_state:
+    st.session_state.clear()
+    st.session_state["reset_done"] = True
+
 def generate_pdf(stroke_risk_percentage, risk_level, user_inputs, file_path="stroke_report.pdf"):
     """
     Generate a PDF report for stroke prediction results.
@@ -42,10 +48,8 @@ def generate_pdf(stroke_risk_percentage, risk_level, user_inputs, file_path="str
     doc.build(story)
     return file_path
 
-
-
-
-st.title("🏥 Stroke Risk Prediction System")
+st.title("Stroke Riskometer")
+st.markdown("A health awareness tool that helps you estimate your risk of stroke and take preventive action.")
 st.markdown("---")
 
 
@@ -78,46 +82,38 @@ st.sidebar.info(f"Test Accuracy: {model_package.get('test_accuracy', 'N/A'):.2%}
 
 
 # Input form
-st.subheader("📋 Enter Patient Details")
+st.subheader("📋 Enter Details")
 
 # Create two columns for better layout
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("**Demographics & Medical History**")
-    age = st.number_input("Age", min_value=0, max_value=120, value=50)
-    sex = st.selectbox("Sex", ["Female", "Male"])
-    hypertension = st.selectbox("Hypertension", ["No", "Yes"])
-    heart_disease = st.selectbox("Heart Disease", ["No", "Yes"])
-    family_history = st.selectbox("Family History of Stroke", ["No", "Yes"])
+    age = st.number_input("Age", min_value=0, max_value=120)
+    sex = st.selectbox("Sex", ["Select","Female", "Male"])
+    hypertension = st.selectbox("Hypertension", ["Select","No", "Yes"])
+    heart_disease = st.selectbox("Heart Disease", ["Select","No", "Yes"])
+    family_history = st.selectbox("Family History of Stroke", ["Select","No", "Yes"])
 
     st.markdown("**Lifestyle**")
-    work_type = st.selectbox("Work Type",
-                             ["Private", "Self-employed", "Govt_job", "Children", "Never_worked"])
-    residence_type = st.selectbox("Residence Type", ["Rural", "Urban"])
-    smoking_status = st.selectbox("Smoking Status",
-                                  ["Never", "Formerly", "Currently", "Unknown"])
+    work_type = st.selectbox("Work Type",["Select","Private", "Self-employed", "Govt_job", "Children", "Never_worked"])
+    residence_type = st.selectbox("Residence Type", ["Select","Rural", "Urban"])
+    smoking_status = st.selectbox("Smoking Status",["Select","Never", "Formerly", "Currently", "Unknown"])
 
 with col2:
     st.markdown("**Clinical Measurements**")
-    avg_glucose_level = st.number_input("Average Glucose Level (mg/dL)",
-                                        min_value=40.0, max_value=300.0, value=100.0)
-    bmi = st.number_input("BMI", min_value=10.0, max_value=60.0, value=25.0)
-    blood_pressure = st.number_input("Systolic Blood Pressure (mmHg)",
-                                     min_value=80, max_value=200, value=120)
-    cholesterol = st.number_input("Total Cholesterol (mg/dL)",
-                                  min_value=100, max_value=400, value=200)
+    avg_glucose_level = st.number_input("Average Glucose Level (mg/dL)",min_value=0.0, max_value=300.0)
+    bmi = st.number_input("BMI", min_value=0.0, max_value=60.0)
+    blood_pressure = st.number_input("Systolic Blood Pressure (mmHg)",min_value=0, max_value=200)
+    cholesterol = st.number_input("Total Cholesterol (mg/dL)",min_value=100, max_value=400, value=200)
 
     st.markdown("**Activity & Stress**")
-    physical_activity = st.number_input("Physical Activity (hours/week)",
-                                        min_value=0.0, max_value=50.0, value=5.0, step=0.5)
-    alcohol_intake = st.number_input("Alcohol Consumption (drinks/week)",
-                                     min_value=0, max_value=30, value=0)
-    stress_level = st.slider("Stress Level", min_value=0, max_value=10, value=5)
+    physical_activity = st.number_input("Physical Activity (hours/week)",min_value=0.0, max_value=50.0, step=0.5)
+    alcohol_intake = st.number_input("Alcohol Consumption (drinks/week)",min_value=0, max_value=30)
+    stress_level = st.slider("Stress Level", min_value=0, max_value=10)
 
     # MRI result (if your dataset has this feature)
-    mri_result = st.number_input("MRI Score (if available)",
-                                 min_value=0.0, max_value=100.0, value=50.0)
+    mri_result = st.number_input("MRI Score (if available)",min_value=0.0, max_value=100.0)
 
 st.markdown("---")
 
@@ -150,6 +146,7 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
 
         # Encode work type (must match your preprocessing)
         work_type_map = {
+            "Select": None,
             "Private": 0,
             "Self-employed": 1,
             "Govt_job": 2,
@@ -162,6 +159,7 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
 
         # Encode smoking status
         smoking_map = {
+            "Select": None,
             "Never": 0,
             "Formerly": 1,
             "Currently": 2,
@@ -193,8 +191,8 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
         ]], columns=feature_names)
 
         # Display the input for debugging
-        with st.expander("🔧 Debug: View Encoded Input"):
-            st.dataframe(input_data)
+        #with st.expander("🔧 Debug: View Encoded Input"):
+            #st.dataframe(input_data)
 
         # Scale the input
         input_scaled = scaler.transform(input_data)
@@ -218,8 +216,7 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
     # Main result with visual indicator
     if stroke_risk_percentage > 50:
         st.error(f"⚠️ **HIGH RISK OF STROKE**")
-        st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%",
-                  delta=f"+{stroke_risk_percentage - 50:.1f}% above threshold")
+        st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%")
 
         st.markdown("""
         ### 🚨 Immediate Recommendations:
@@ -243,8 +240,7 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
 
     else:
         st.success(f"✅ **LOW RISK OF STROKE**")
-        st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%",
-                  delta=f"-{50 - stroke_risk_percentage:.1f}% below threshold")
+        st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%")
 
         st.markdown("""
         ### 💚 Recommendations:
@@ -310,27 +306,9 @@ if st.button("📄 Generate Report"):
             st.download_button("⬇️ Download PDF", pdf_file, file_name="stroke_report.pdf", mime="application/pdf")
 
 
-
-
-    # Additional information
-    with st.expander("ℹ️ About This Prediction"):
-        st.markdown("""
-        This prediction is based on a machine learning model trained on historical patient data.
-
-        **Important Notes:**
-        - This is a screening tool, not a diagnostic test
-        - Always consult with healthcare professionals for medical decisions
-        - The model considers multiple risk factors simultaneously
-        - Individual risk may vary based on factors not captured in this model
-
-        **Model Performance:**
-        - The model has been validated on test data
-        - Results should be interpreted by medical professionals
-        - Regular updates ensure accuracy with latest medical knowledge
-        """)
-
 # Footer
 st.markdown("---")
 st.caption(
-    "⚕️ This tool is for educational and screening purposes only. Always consult healthcare professionals for medical advice.")
-st.caption(f"Model Version: {model_package.get('version', '1.0')} | Features: {len(feature_names)}")
+    "This system is intended for health awareness and preliminary risk assessment. "
+    "It does not provide a medical diagnosis. Always consult a qualified healthcare professional for"
+    " medical advice and treatment decisions.")
