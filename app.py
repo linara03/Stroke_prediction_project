@@ -105,7 +105,7 @@ with col2:
     avg_glucose_level = st.number_input("Average Glucose Level (mg/dL)",min_value=0.0, max_value=300.0)
     bmi = st.number_input("BMI", min_value=0.0, max_value=60.0)
     blood_pressure = st.number_input("Systolic Blood Pressure (mmHg)",min_value=0, max_value=200)
-    cholesterol = st.number_input("Total Cholesterol (mg/dL)",min_value=100, max_value=400, value=200)
+    cholesterol = st.number_input("Total Cholesterol (mg/dL)",min_value=0, max_value=400)
 
     st.markdown("**Activity & Stress**")
     physical_activity = st.number_input("Physical Activity (hours/week)",min_value=0.0, max_value=50.0, step=0.5)
