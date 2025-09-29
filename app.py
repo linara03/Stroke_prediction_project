@@ -64,7 +64,6 @@ def load_model():
         st.error(f"Error loading model: {e}")
         return None
 
-
 model_package = load_model()
 
 if model_package is None:
@@ -74,12 +73,6 @@ if model_package is None:
 model = model_package['model']
 scaler = model_package['scaler']
 feature_names = model_package['feature_names']
-
-st.sidebar.header("Model Information")
-st.sidebar.info(f"Training Accuracy: {model_package.get('training_accuracy', 'N/A'):.2%}")
-st.sidebar.info(f"Test Accuracy: {model_package.get('test_accuracy', 'N/A'):.2%}")
-
-
 
 # Input form
 st.subheader("📋 Enter Details")
