@@ -42,8 +42,6 @@ def generate_pdf(stroke_risk_percentage, risk_level, user_inputs, file_path="str
         story.append(Paragraph(f"{key}: {value}", styles['Normal']))
     story.append(Spacer(1, 12))
 
-    # Footer
-    story.append(Paragraph("⚠️ Note: This is an AI-based prediction. Consult a medical professional for final diagnosis.", styles['Italic']))
 
     doc.build(story)
     return file_path
@@ -272,7 +270,7 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
 
         st.metric("Risk Level", f"{color} {risk_level}")
 
-        # ✅ Save results in session_state
+        # ✅ Save results in session_state with ALL inputs
         st.session_state["stroke_risk_percentage"] = stroke_risk_percentage
         st.session_state["risk_level"] = risk_level
         st.session_state["user_inputs"] = {
@@ -280,10 +278,19 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
             "Sex": sex,
             "Hypertension": hypertension,
             "Heart Disease": heart_disease,
-            "Glucose Level": avg_glucose_level,
+            "Family History": family_history,
+            "Work Type": work_type,
+            "Residence Type": residence_type,
+            "Smoking Status": smoking_status,
+            "Average Glucose Level": avg_glucose_level,
             "BMI": bmi,
+            "Blood Pressure": blood_pressure,
+            "Cholesterol": cholesterol,
+            "Physical Activity (hrs/week)": physical_activity,
+            "Alcohol Intake (drinks/week)": alcohol_intake,
+            "Stress Level": stress_level,
+            "MRI Score": mri_result
         }
-        st.success("Prediction completed! You can now generate a report.")
 
 # PDF download button
 if st.button("📄 Generate Report"):
