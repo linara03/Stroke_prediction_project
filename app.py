@@ -310,7 +310,7 @@ if st.button("📄 Generate Report"):
             st.download_button("⬇️ Download PDF", pdf_file, file_name="stroke_report.pdf", mime="application/pdf")
 
 
-    
+
 
     # Additional information
     with st.expander("ℹ️ About This Prediction"):
