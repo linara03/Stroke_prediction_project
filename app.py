@@ -9,7 +9,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 import datetime
 
 
-# ✅ Reset session state on refresh
+#Reset session state on refresh
 if "reset_done" not in st.session_state:
     st.session_state.clear()
     st.session_state["reset_done"] = True
@@ -75,7 +75,6 @@ feature_names = model_package['feature_names']
 # Input form
 st.subheader("📋 Enter Details")
 
-# Create two columns for better layout
 col1, col2 = st.columns(2)
 
 with col1:
@@ -109,7 +108,7 @@ with col2:
 st.markdown("---")
 
 # Add risk indicators
-st.subheader("🔍 Risk Indicators Preview")
+st.subheader("Risk Indicators Preview")
 risk_factors = []
 if age > 65: risk_factors.append("Age > 65")
 if hypertension == "Yes": risk_factors.append("Hypertension")
@@ -127,7 +126,7 @@ else:
     st.success("✅ No major risk factors identified")
 
 # Prediction button
-if st.button("🔮 Predict Stroke Risk", type="primary"):
+if st.button("Predict Stroke Risk", type="primary"):
     with st.spinner("Analyzing patient data..."):
 
         # Encode categorical variables to match training
@@ -181,9 +180,6 @@ if st.button("🔮 Predict Stroke Risk", type="primary"):
             mri_result
         ]], columns=feature_names)
 
-        # Display the input for debugging
-        #with st.expander("🔧 Debug: View Encoded Input"):
-            #st.dataframe(input_data)
 
         # Scale the input
         input_scaled = scaler.transform(input_data)
