@@ -10,8 +10,4 @@ To address this issue, our team designed an intelligent software solution that l
 
 Our solution, called Stroke Predictor, is an interactive application that enables users to input their health and lifestyle information to receive an estimated risk score. It aims to assist both individuals and healthcare providers in making data-driven decisions and promoting awareness about stroke prevention.
 
-python
-streamlit
-Google colab
 
-🚀 Streamlit App: https://strokepredictionproject-dqsdw6b7ybujxhns6h2axv.streamlit.app/
