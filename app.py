@@ -23,12 +23,12 @@ def generate_pdf(stroke_risk_percentage, risk_level, user_inputs, file_path="str
     story = []
 
     # Title
-    story.append(Paragraph("🏥 Stroke Risk Prediction Report", styles['Title']))
+    story.append(Paragraph("Stroke Risk Prediction Report", styles['Title']))
     story.append(Spacer(1, 12))
 
     # Date & Time
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    story.append(Paragraph(f"📅 Report Generated: {current_time}", styles['Normal']))
+    story.append(Paragraph(f"Report Generated: {current_time}", styles['Normal']))
     story.append(Spacer(1, 12))
 
     # Risk results
@@ -73,7 +73,7 @@ scaler = model_package['scaler']
 feature_names = model_package['feature_names']
 
 # Input form
-st.subheader("📋 Enter Details")
+st.subheader("Enter Details")
 
 col1, col2 = st.columns(2)
 
@@ -101,8 +101,6 @@ with col2:
     physical_activity = st.number_input("Physical Activity (hours/week)",min_value=0.0, max_value=50.0, step=0.5)
     alcohol_intake = st.number_input("Alcohol Consumption (drinks/week)",min_value=0, max_value=30)
     stress_level = st.slider("Stress Level", min_value=0, max_value=10)
-
-    # MRI result (if your dataset has this feature)
     mri_result = st.number_input("MRI Score (if available)",min_value=0.0, max_value=100.0)
 
 st.markdown("---")
@@ -121,9 +119,9 @@ if cholesterol > 240: risk_factors.append("High Cholesterol")
 if family_history == "Yes": risk_factors.append("Family History")
 
 if risk_factors:
-    st.warning(f"⚠️ Identified Risk Factors: {', '.join(risk_factors)}")
+    st.warning(f"Identified Risk Factors: {', '.join(risk_factors)}")
 else:
-    st.success("✅ No major risk factors identified")
+    st.success("No major risk factors identified")
 
 # Prediction button
 if st.button("Predict Stroke Risk", type="primary"):
@@ -134,7 +132,7 @@ if st.button("Predict Stroke Risk", type="primary"):
         hypertension_val = 1 if hypertension == "Yes" else 0
         heart_disease_val = 1 if heart_disease == "Yes" else 0
 
-        # Encode work type (must match your preprocessing)
+        # Encode work type
         work_type_map = {
             "Select": None,
             "Private": 0,
@@ -160,7 +158,7 @@ if st.button("Predict Stroke Risk", type="primary"):
         family_history_val = 1 if family_history == "Yes" else 0
 
         # Create input dataframe with exact feature order
-        # IMPORTANT: This must match the exact order of features during training
+
         input_data = pd.DataFrame([[
             age,
             sex_val,
@@ -197,16 +195,16 @@ if st.button("Predict Stroke Risk", type="primary"):
 
     # Display results
     st.markdown("---")
-    st.subheader("📊 Prediction Results")
+    st.subheader("Prediction Results")
 
 
-    # Main result with visual indicator
+    # Final result
     if stroke_risk_percentage > 50:
-        st.error(f"⚠️ **HIGH RISK OF STROKE**")
+        st.error(f" **HIGH RISK OF STROKE**")
         st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%")
 
         st.markdown("""
-        ### 🚨 Immediate Recommendations:
+        ###  Immediate Recommendations:
         - **Consult a healthcare professional immediately**
         - Consider comprehensive cardiovascular evaluation
         - Review and optimize current medications
@@ -214,11 +212,11 @@ if st.button("Predict Stroke Risk", type="primary"):
         """)
 
     elif stroke_risk_percentage > 30:
-        st.warning(f"⚡ **MODERATE RISK OF STROKE**")
+        st.warning(f" **MODERATE RISK OF STROKE**")
         st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%")
 
         st.markdown("""
-        ### ⚡ Recommendations:
+        ###  Recommendations:
         - Schedule a check-up with your healthcare provider
         - Monitor blood pressure and glucose regularly
         - Consider lifestyle modifications
@@ -226,20 +224,20 @@ if st.button("Predict Stroke Risk", type="primary"):
         """)
 
     else:
-        st.success(f"✅ **LOW RISK OF STROKE**")
+        st.success(f" **LOW RISK OF STROKE**")
         st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%")
 
         st.markdown("""
-        ### 💚 Recommendations:
+        ###  Recommendations:
         - Continue maintaining healthy lifestyle
         - Regular health check-ups
         - Stay physically active
         - Monitor any changes in health status
         """)
 
-    # Probability breakdown
+    # Probability
     st.markdown("---")
-    st.subheader("📈 Risk Analysis")
+    st.subheader(" Risk Analysis")
 
     col1, col2, col3 = st.columns(3)
 
@@ -250,7 +248,7 @@ if st.button("Predict Stroke Risk", type="primary"):
         st.metric("Stroke Probability", f"{stroke_prob:.1%}")
 
     with col3:
-        # Risk category
+
         if stroke_risk_percentage > 70:
             risk_level = "Very High"
             color = "🔴"
@@ -266,7 +264,7 @@ if st.button("Predict Stroke Risk", type="primary"):
 
         st.metric("Risk Level", f"{color} {risk_level}")
 
-        # ✅ Save results in session_state with ALL inputs
+        #  Save results
         st.session_state["stroke_risk_percentage"] = stroke_risk_percentage
         st.session_state["risk_level"] = risk_level
         st.session_state["user_inputs"] = {
@@ -289,9 +287,9 @@ if st.button("Predict Stroke Risk", type="primary"):
         }
 
 # PDF download button
-if st.button("📄 Generate Report"):
+if st.button(" Generate Report"):
     if "stroke_risk_percentage" not in st.session_state:
-        st.error("⚠️ Please run the prediction first before generating a report.")
+        st.error(" Please run the prediction first before generating a report.")
     else:
         pdf_path = generate_pdf(
             st.session_state["stroke_risk_percentage"],
@@ -299,10 +297,9 @@ if st.button("📄 Generate Report"):
             st.session_state["user_inputs"]
             )
         with open(pdf_path, "rb") as pdf_file:
-            st.download_button("⬇️ Download PDF", pdf_file, file_name="stroke_report.pdf", mime="application/pdf")
+            st.download_button(" Download PDF", pdf_file, file_name="stroke_report.pdf", mime="application/pdf")
 
 
-# Footer
 st.markdown("---")
 st.caption(
     "This system is intended for health awareness and preliminary risk assessment. "
