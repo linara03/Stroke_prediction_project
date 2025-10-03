@@ -341,10 +341,9 @@ def render_assessment_page():
                     <div style="color:#000000;">
                     <h4>Immediate Recommendations:</h4>
                     <ul>
-                        <li><strong>Consult a healthcare professional immediately</strong></li>
+                        <li><strong>Consult a healthcare professional</strong></li>
                         <li>Consider comprehensive cardiovascular evaluation</li>
                         <li>Review and optimize current medications</li>
-                        <li>Implement lifestyle modifications urgently</li>
                     </ul>
                     </div>
                     """,
@@ -357,9 +356,8 @@ def render_assessment_page():
                     <div style=\"color:#000000;\">\n                    <h4>Recommendations:</h4>
                     <ul>
                         <li>Schedule a check-up with your healthcare provider</li>
-                        <li>Monitor blood pressure and glucose regularly</li>
+                        <li>Monitor blood pressure regularly</li>
                         <li>Consider lifestyle modifications</li>
-                        <li>Review family history with doctor</li>
                     </ul>
                     </div>
                     """,
@@ -367,19 +365,7 @@ def render_assessment_page():
                 )
             else:
                 st.markdown("<h3 style='margin:0 0 0.5rem 0; color:#16a34a;'>LOW RISK OF STROKE</h3>", unsafe_allow_html=True)
-                st.markdown(
-                    """
-                    <div style=\"color:#000000;\">\n                    <h4>Recommendations:</h4>
-                    <ul>
-                        <li>Continue maintaining healthy lifestyle</li>
-                        <li>Regular health check-ups</li>
-                        <li>Stay physically active</li>
-                        <li>Monitor any changes in health status</li>
-                    </ul>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+               
 
 
     # PDF download button
