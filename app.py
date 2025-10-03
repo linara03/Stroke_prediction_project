@@ -55,7 +55,7 @@ st.markdown("---")
 @st.cache_resource
 def load_model():
     try:
-        with open(r"D:/Stroke_prediction_project/models/random_forest_fixed.pkl", "rb") as f:
+        with open("models/random_forest.pkl", "rb") as f:
             model_package = pickle.load(f)
             return model_package
     except Exception as e:
@@ -100,7 +100,7 @@ with col2:
     st.markdown("**Activity & Stress**")
     physical_activity = st.number_input("Physical Activity (hours/week)",min_value=0.0, max_value=50.0, step=0.5)
     alcohol_intake = st.number_input("Alcohol Consumption (drinks/week)",min_value=0, max_value=30)
-    stress_level = st.slider("Stress Level", min_value=0, max_value=10)
+    stress_level = st.slider("Stress Level", min_value=0, max_value=10, value=5)
     mri_result = st.number_input("MRI Score (if available)",min_value=0.0, max_value=100.0)
 
 st.markdown("---")
