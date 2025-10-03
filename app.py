@@ -8,6 +8,12 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 import datetime
 
+st.set_page_config(
+    page_title="Stroke Riskometer",
+    page_icon="🧠",
+    layout="wide"
+)
+
 st.markdown(
     """
     <style>
@@ -57,7 +63,7 @@ def generate_pdf(stroke_risk_percentage, risk_level, user_inputs, file_path="str
 st.markdown(
     """
     <div style="text-align:center; margin-bottom:56px;">
-        <h1 style="color:#000000; margin-bottom:0.25rem;">Stroke Riskometer</h1>
+        <h1 style="color:#000000; margin-bottom:0.25rem;">🧠 Stroke Riskometer</h1>
         <p style="margin-top:0.25rem; color:#000000;">1 in 4 of us will have a stroke in our lifetime, but almost all strokes can be prevented. If you want to avoid a stroke the first step is to understand your individual risk factors.</p>
         
         
@@ -102,14 +108,14 @@ def render_home_page():
         unsafe_allow_html=True
     )
 
-    col1, col_spacer, col2 = st.columns([1, 0.8, 1])
+    col1, col_spacer, col2 = st.columns([1, 0.2, 1])
     with col1:
-        st.markdown("<h3 style='color:#dc2626; margin-bottom:0.25rem; font-size:2rem;'>Assess</h3>", unsafe_allow_html=True)
-        st.markdown("<p style='color:#dc2626; margin-top:0; font-size:1.125rem;'>Estimate your current stroke risk based on your inputs.</p>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#dc2626; margin-bottom:0.25rem; font-size:2rem;'>📊 Assess</h3>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#dc2626; margin-top:0; font-size:1.125rem;'>Estimate your current stroke risk.</p>", unsafe_allow_html=True)
         if st.button("Go to Assessment", type="primary", use_container_width=True):
             go_to("assess")
     with col2:
-        st.markdown("<h3 style='color:#000000; margin-bottom:0.25rem; font-size:2rem;'>FAST</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#000000; margin-bottom:0.25rem; font-size:2rem;'>⏱️ F.A.S.T</h3>", unsafe_allow_html=True)
         st.markdown("<p style='color:#000000; margin-top:0; font-size:1.125rem;'>Learn about key stroke warning signs and risk factors.</p>", unsafe_allow_html=True)
         if st.button("Learn FAST & Risk Factors", use_container_width=True):
             go_to("fast")
@@ -164,7 +170,7 @@ def render_assessment_page():
     feature_names = model_package['feature_names']
 
     # Input form
-    st.markdown("<h3 style='color:#000000; margin:0;'>Enter Details</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#000000; margin:0;'>📝 Enter Details</h3>", unsafe_allow_html=True)
     # Make form control labels red
     st.markdown(
         """
@@ -183,26 +189,26 @@ def render_assessment_page():
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("<p style='color:#dc2626; font-weight:600;'>Demographics & Medical History</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#dc2626; font-weight:600;'>👤 Demographics & Medical History</p>", unsafe_allow_html=True)
         age = st.number_input("Age", min_value=0, max_value=120)
         sex = st.selectbox("Sex", ["Select","Female", "Male"])
         hypertension = st.selectbox("Hypertension", ["Select","No", "Yes"])
         heart_disease = st.selectbox("Heart Disease", ["Select","No", "Yes"])
         family_history = st.selectbox("Family History of Stroke", ["Select","No", "Yes"])
 
-        st.markdown("<p style='color:#dc2626; font-weight:600;'>Lifestyle</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#dc2626; font-weight:600;'>🏃 Lifestyle</p>", unsafe_allow_html=True)
         work_type = st.selectbox("Work Type",["Select","Private", "Self-employed", "Govt_job", "Children", "Never_worked"])
         residence_type = st.selectbox("Residence Type", ["Select","Rural", "Urban"])
         smoking_status = st.selectbox("Smoking Status",["Select","Never", "Formerly", "Currently", "Unknown"])
 
     with col2:
-        st.markdown("<p style='color:#dc2626; font-weight:600;'>Clinical Measurements</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#dc2626; font-weight:600;'>🧪 Clinical Measurements</p>", unsafe_allow_html=True)
         avg_glucose_level = st.number_input("Average Glucose Level (mg/dL)",min_value=0.0, max_value=300.0)
         bmi = st.number_input("BMI", min_value=0.0, max_value=60.0)
         blood_pressure = st.number_input("Systolic Blood Pressure (mmHg)",min_value=0, max_value=200)
         cholesterol = st.number_input("Total Cholesterol (mg/dL)",min_value=0, max_value=400)
 
-        st.markdown("<p style='color:#dc2626; font-weight:600;'>Activity & Stress</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#dc2626; font-weight:600;'>🧘 Activity & Stress</p>", unsafe_allow_html=True)
         physical_activity = st.number_input("Physical Activity (hours/week)",min_value=0.0, max_value=50.0, step=0.5)
         alcohol_intake = st.number_input("Alcohol Consumption (drinks/week)",min_value=0, max_value=30)
         stress_level = st.slider("Stress Level", min_value=0, max_value=10, value=5)
@@ -211,7 +217,7 @@ def render_assessment_page():
     st.markdown("---")
 
     # Add risk indicators
-    st.markdown("<h3 style='color:#000000; margin:0;'>Risk Indicators</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#000000; margin:0;'>⚠️ Risk Indicators</h3>", unsafe_allow_html=True)
     risk_factors = []
     if age > 65: risk_factors.append("Age > 65")
     if hypertension == "Yes": risk_factors.append("Hypertension")
@@ -365,7 +371,7 @@ def render_assessment_page():
                 )
             else:
                 st.markdown("<h3 style='margin:0 0 0.5rem 0; color:#16a34a;'>LOW RISK OF STROKE</h3>", unsafe_allow_html=True)
-               
+
 
 
     # PDF download button
@@ -383,7 +389,7 @@ def render_assessment_page():
 
     st.markdown("---")
     st.caption(
-        "This system is intended for health awareness and preliminary risk assessment. "
+        "ℹ️ This system is intended for health awareness and preliminary risk assessment. "
         "It does not provide a medical diagnosis. Always consult a qualified healthcare professional for"
         " medical advice and treatment decisions.")
 
