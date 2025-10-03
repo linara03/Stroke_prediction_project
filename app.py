@@ -232,7 +232,6 @@ if st.button("Predict Stroke Risk", type="primary"):
     # Final result
     if stroke_risk_percentage > 50:
         st.error(f" **HIGH RISK OF STROKE**")
-        st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%")
 
         st.markdown("""
         ###  Immediate Recommendations:
@@ -244,7 +243,6 @@ if st.button("Predict Stroke Risk", type="primary"):
 
     elif stroke_risk_percentage > 30:
         st.warning(f" **MODERATE RISK OF STROKE**")
-        st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%")
 
         st.markdown("""
         ###  Recommendations:
@@ -256,7 +254,6 @@ if st.button("Predict Stroke Risk", type="primary"):
 
     else:
         st.success(f" **LOW RISK OF STROKE**")
-        st.metric("Stroke Risk Score", f"{stroke_risk_percentage:.1f}%")
 
         st.markdown("""
         ###  Recommendations:
