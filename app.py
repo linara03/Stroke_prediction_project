@@ -8,6 +8,15 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 import datetime
 
+st.markdown(
+    """
+    <style>
+    .stApp { background-color: #fff5f5; }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
 #Reset session state on refresh
 if "reset_done" not in st.session_state:
@@ -31,8 +40,7 @@ def generate_pdf(stroke_risk_percentage, risk_level, user_inputs, file_path="str
     story.append(Paragraph(f"Report Generated: {current_time}", styles['Normal']))
     story.append(Spacer(1, 12))
 
-    # Risk results
-    story.append(Paragraph(f"<b>Stroke Risk Percentage:</b> {stroke_risk_percentage:.2f}%", styles['Normal']))
+    # Risk results (omit percentage from PDF)
     story.append(Paragraph(f"<b>Risk Category:</b> {risk_level}", styles['Normal']))
     story.append(Spacer(1, 12))
 
@@ -46,9 +54,18 @@ def generate_pdf(stroke_risk_percentage, risk_level, user_inputs, file_path="str
     doc.build(story)
     return file_path
 
-st.title("Stroke Riskometer")
-st.markdown("A health awareness tool that helps you estimate your risk of stroke and take preventive action.")
-st.markdown("---")
+st.markdown(
+    """
+    <div style="text-align:center; margin-bottom:56px;">
+        <h1 style="color:#000000; margin-bottom:0.25rem;">Stroke Riskometer</h1>
+        <p style="margin-top:0.25rem; color:#000000;">1 in 4 of us will have a stroke in our lifetime, but almost all strokes can be prevented. If you want to avoid a stroke the first step is to understand your individual risk factors.</p>
+        
+        
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 
 # Simple in-app router
 if "page" not in st.session_state:
@@ -71,55 +88,67 @@ def load_model():
         return None
 
 def render_home_page():
-    st.subheader("Welcome")
-    st.markdown("Choose an option to continue:")
+    # Increase button size on home
+    st.markdown(
+        """
+        <style>
+        div.stButton > button {
+            font-size: 18px; /* larger text */
+            padding: 14px 22px; /* larger padding */
+            border-radius: 10px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-    col1, col2 = st.columns(2)
+    col1, col_spacer, col2 = st.columns([1, 0.8, 1])
     with col1:
-        st.markdown("### Assess")
-        st.markdown("Estimate your current stroke risk based on your inputs.")
+        st.markdown("<h3 style='color:#dc2626; margin-bottom:0.25rem; font-size:2rem;'>Assess</h3>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#dc2626; margin-top:0; font-size:1.125rem;'>Estimate your current stroke risk based on your inputs.</p>", unsafe_allow_html=True)
         if st.button("Go to Assessment", type="primary", use_container_width=True):
             go_to("assess")
     with col2:
-        st.markdown("### FAST")
-        st.markdown("Learn about key stroke warning signs and risk factors.")
+        st.markdown("<h3 style='color:#000000; margin-bottom:0.25rem; font-size:2rem;'>FAST</h3>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#000000; margin-top:0; font-size:1.125rem;'>Learn about key stroke warning signs and risk factors.</p>", unsafe_allow_html=True)
         if st.button("Learn FAST & Risk Factors", use_container_width=True):
             go_to("fast")
 
-    st.markdown("---")
+    
 
 def render_fast_info_page():
     if st.button("← Back to Home"):
         go_to("home")
 
-    st.subheader("FAST: Recognize Stroke Symptoms Quickly")
     st.markdown(
-        "- **F — Face drooping**: One side of the face droops or is numb."
-    )
-    st.markdown(
-        "- **A — Arm weakness**: Weakness or numbness in one arm; can't raise both arms."
-    )
-    st.markdown(
-        "- **S — Speech difficulty**: Slurred speech or difficulty speaking/understanding."
-    )
-    st.markdown(
-        "- **T — Time to call emergency services**: If you observe any of these signs, call immediately."
-    )
+        """
+<div style="color:#000000;">
+<h3>FAST: Recognize Stroke Symptoms Quickly</h3>
+<ul>
+<li><strong>F — Face drooping</strong>: One side of the face droops or is numb.</li>
+<li><strong>A — Arm weakness</strong>: Weakness or numbness in one arm; can't raise both arms.</li>
+<li><strong>S — Speech difficulty</strong>: Slurred speech or difficulty speaking/understanding.</li>
+<li><strong>T — Time to call emergency services</strong>: If you observe any of these signs, call immediately.</li>
+</ul>
 
-    st.markdown("---")
-    st.subheader("Common Risk Factors")
-    st.markdown(
-        "- **High blood pressure**\n"
-        "- **Diabetes**\n"
-        "- **High cholesterol**\n"
-        "- **Smoking**\n"
-        "- **Obesity and physical inactivity**\n"
-        "- **Heart disease (e.g., atrial fibrillation)**\n"
-        "- **Family history of stroke**\n"
-        "- **Excessive alcohol use and stress**"
-    )
+<hr />
+<h3>Common Risk Factors</h3>
+<ul>
+<li><strong>High blood pressure</strong></li>
+<li><strong>Diabetes</strong></li>
+<li><strong>High cholesterol</strong></li>
+<li><strong>Smoking</strong></li>
+<li><strong>Obesity and physical inactivity</strong></li>
+<li><strong>Heart disease (e.g., atrial fibrillation)</strong></li>
+<li><strong>Family history of stroke</strong></li>
+<li><strong>Excessive alcohol use and stress</strong></li>
+</ul>
 
-    st.info("If you suspect a stroke, seek emergency care immediately. Early treatment saves brain function.")
+<p><em>If you suspect a stroke, seek emergency care immediately. Early treatment saves brain function.</em></p>
+</div>
+        """,
+        unsafe_allow_html=True
+    )
 
 def render_assessment_page():
     if st.button("← Back to Home"):
@@ -135,31 +164,45 @@ def render_assessment_page():
     feature_names = model_package['feature_names']
 
     # Input form
-    st.subheader("Enter Details")
+    st.markdown("<h3 style='color:#000000; margin:0;'>Enter Details</h3>", unsafe_allow_html=True)
+    # Make form control labels red
+    st.markdown(
+        """
+        <style>
+        div[data-testid="stNumberInput"] label,
+        div[data-testid="stSelectbox"] label,
+        div[data-testid="stSlider"] label,
+        div[data-testid="stTextInput"] label {
+            color: #dc2626 !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("**Demographics & Medical History**")
+        st.markdown("<p style='color:#dc2626; font-weight:600;'>Demographics & Medical History</p>", unsafe_allow_html=True)
         age = st.number_input("Age", min_value=0, max_value=120)
         sex = st.selectbox("Sex", ["Select","Female", "Male"])
         hypertension = st.selectbox("Hypertension", ["Select","No", "Yes"])
         heart_disease = st.selectbox("Heart Disease", ["Select","No", "Yes"])
         family_history = st.selectbox("Family History of Stroke", ["Select","No", "Yes"])
 
-        st.markdown("**Lifestyle**")
+        st.markdown("<p style='color:#dc2626; font-weight:600;'>Lifestyle</p>", unsafe_allow_html=True)
         work_type = st.selectbox("Work Type",["Select","Private", "Self-employed", "Govt_job", "Children", "Never_worked"])
         residence_type = st.selectbox("Residence Type", ["Select","Rural", "Urban"])
         smoking_status = st.selectbox("Smoking Status",["Select","Never", "Formerly", "Currently", "Unknown"])
 
     with col2:
-        st.markdown("**Clinical Measurements**")
+        st.markdown("<p style='color:#dc2626; font-weight:600;'>Clinical Measurements</p>", unsafe_allow_html=True)
         avg_glucose_level = st.number_input("Average Glucose Level (mg/dL)",min_value=0.0, max_value=300.0)
         bmi = st.number_input("BMI", min_value=0.0, max_value=60.0)
         blood_pressure = st.number_input("Systolic Blood Pressure (mmHg)",min_value=0, max_value=200)
         cholesterol = st.number_input("Total Cholesterol (mg/dL)",min_value=0, max_value=400)
 
-        st.markdown("**Activity & Stress**")
+        st.markdown("<p style='color:#dc2626; font-weight:600;'>Activity & Stress</p>", unsafe_allow_html=True)
         physical_activity = st.number_input("Physical Activity (hours/week)",min_value=0.0, max_value=50.0, step=0.5)
         alcohol_intake = st.number_input("Alcohol Consumption (drinks/week)",min_value=0, max_value=30)
         stress_level = st.slider("Stress Level", min_value=0, max_value=10, value=5)
@@ -168,7 +211,7 @@ def render_assessment_page():
     st.markdown("---")
 
     # Add risk indicators
-    st.subheader("Risk Indicators Preview")
+    st.markdown("<h3 style='color:#000000; margin:0;'>Risk Indicators</h3>", unsafe_allow_html=True)
     risk_factors = []
     if age > 65: risk_factors.append("Age > 65")
     if hypertension == "Yes": risk_factors.append("Hypertension")
@@ -181,9 +224,12 @@ def render_assessment_page():
     if family_history == "Yes": risk_factors.append("Family History")
 
     if risk_factors:
-        st.warning(f"Identified Risk Factors: {', '.join(risk_factors)}")
+        st.markdown(
+            f"<p style='color:#000000; margin:0;'><strong>Identified Risk Factors:</strong> {', '.join(risk_factors)}</p><br>",
+            unsafe_allow_html=True
+        )
     else:
-        st.success("No major risk factors identified")
+        st.markdown("<p style='color:#000000; margin:0;'>No major risk factors identified</p>", unsafe_allow_html=True)
 
     # Prediction button
     if st.button("Predict Stroke Risk", type="primary"):
@@ -283,38 +329,57 @@ def render_assessment_page():
                 "MRI Score": mri_result
             }
 
-            # Display results
-            st.markdown("---")
-            st.subheader("Prediction Results")
+            # Display results (reduced spacing)
+            st.markdown("<div style='height:0.5px'></div>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color:#000000; margin:0;'>Prediction Results</h3>", unsafe_allow_html=True)
 
             # Final result
             if stroke_risk_percentage > 50:
-                st.error(f" **HIGH RISK OF STROKE**")
-                st.markdown("""
-                ###  Immediate Recommendations:
-                - **Consult a healthcare professional immediately**
-                - Consider comprehensive cardiovascular evaluation
-                - Review and optimize current medications
-                - Implement lifestyle modifications urgently
-                """)
+                st.markdown("<h3 style='margin:0 0 0.5rem 0; color:#dc2626;'>HIGH RISK OF STROKE</h3>", unsafe_allow_html=True)
+                st.markdown(
+                    """
+                    <div style="color:#000000;">
+                    <h4>Immediate Recommendations:</h4>
+                    <ul>
+                        <li><strong>Consult a healthcare professional immediately</strong></li>
+                        <li>Consider comprehensive cardiovascular evaluation</li>
+                        <li>Review and optimize current medications</li>
+                        <li>Implement lifestyle modifications urgently</li>
+                    </ul>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
             elif stroke_risk_percentage > 30:
-                st.warning(f" **MODERATE RISK OF STROKE**")
-                st.markdown("""
-                ###  Recommendations:
-                - Schedule a check-up with your healthcare provider
-                - Monitor blood pressure and glucose regularly
-                - Consider lifestyle modifications
-                - Review family history with doctor
-                """)
+                st.markdown("<h3 style='margin:0 0 0.5rem 0; color:#f59e0b;'>MODERATE RISK OF STROKE</h3>", unsafe_allow_html=True)
+                st.markdown(
+                    """
+                    <div style=\"color:#000000;\">\n                    <h4>Recommendations:</h4>
+                    <ul>
+                        <li>Schedule a check-up with your healthcare provider</li>
+                        <li>Monitor blood pressure and glucose regularly</li>
+                        <li>Consider lifestyle modifications</li>
+                        <li>Review family history with doctor</li>
+                    </ul>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
             else:
-                st.success(f" **LOW RISK OF STROKE**")
-                st.markdown("""
-                ###  Recommendations:
-                - Continue maintaining healthy lifestyle
-                - Regular health check-ups
-                - Stay physically active
-                - Monitor any changes in health status
-                """)
+                st.markdown("<h3 style='margin:0 0 0.5rem 0; color:#16a34a;'>LOW RISK OF STROKE</h3>", unsafe_allow_html=True)
+                st.markdown(
+                    """
+                    <div style=\"color:#000000;\">\n                    <h4>Recommendations:</h4>
+                    <ul>
+                        <li>Continue maintaining healthy lifestyle</li>
+                        <li>Regular health check-ups</li>
+                        <li>Stay physically active</li>
+                        <li>Monitor any changes in health status</li>
+                    </ul>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
 
     # PDF download button
