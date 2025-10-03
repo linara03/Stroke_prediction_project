@@ -187,11 +187,42 @@ if st.button("Predict Stroke Risk", type="primary"):
         probabilities = model.predict_proba(input_scaled)[0]
 
         # Extract probabilities
-        no_stroke_prob = probabilities[0]
         stroke_prob = probabilities[1]
 
         # Convert to percentage
         stroke_risk_percentage = stroke_prob * 100
+
+        # Calculate risk level for report generation
+        if stroke_risk_percentage > 70:
+            risk_level = "Very High"
+        elif stroke_risk_percentage > 50:
+            risk_level = "High"
+        elif stroke_risk_percentage > 30:
+            risk_level = "Moderate"
+        else:
+            risk_level = "Low"
+
+        # Save results to session state for report generation
+        st.session_state["stroke_risk_percentage"] = stroke_risk_percentage
+        st.session_state["risk_level"] = risk_level
+        st.session_state["user_inputs"] = {
+            "Age": age,
+            "Sex": sex,
+            "Hypertension": hypertension,
+            "Heart Disease": heart_disease,
+            "Family History": family_history,
+            "Work Type": work_type,
+            "Residence Type": residence_type,
+            "Smoking Status": smoking_status,
+            "Average Glucose Level": avg_glucose_level,
+            "BMI": bmi,
+            "Blood Pressure": blood_pressure,
+            "Cholesterol": cholesterol,
+            "Physical Activity (hrs/week)": physical_activity,
+            "Alcohol Intake (drinks/week)": alcohol_intake,
+            "Stress Level": stress_level,
+            "MRI Score": mri_result
+        }
 
     # Display results
     st.markdown("---")
@@ -235,56 +266,6 @@ if st.button("Predict Stroke Risk", type="primary"):
         - Monitor any changes in health status
         """)
 
-    # Probability
-    st.markdown("---")
-    st.subheader(" Risk Analysis")
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric("No Stroke Probability", f"{no_stroke_prob:.1%}")
-
-    with col2:
-        st.metric("Stroke Probability", f"{stroke_prob:.1%}")
-
-    with col3:
-
-        if stroke_risk_percentage > 70:
-            risk_level = "Very High"
-            color = "🔴"
-        elif stroke_risk_percentage > 50:
-            risk_level = "High"
-            color = "🟠"
-        elif stroke_risk_percentage > 30:
-            risk_level = "Moderate"
-            color = "🟡"
-        else:
-            risk_level = "Low"
-            color = "🟢"
-
-        st.metric("Risk Level", f"{color} {risk_level}")
-
-        #  Save results
-        st.session_state["stroke_risk_percentage"] = stroke_risk_percentage
-        st.session_state["risk_level"] = risk_level
-        st.session_state["user_inputs"] = {
-            "Age": age,
-            "Sex": sex,
-            "Hypertension": hypertension,
-            "Heart Disease": heart_disease,
-            "Family History": family_history,
-            "Work Type": work_type,
-            "Residence Type": residence_type,
-            "Smoking Status": smoking_status,
-            "Average Glucose Level": avg_glucose_level,
-            "BMI": bmi,
-            "Blood Pressure": blood_pressure,
-            "Cholesterol": cholesterol,
-            "Physical Activity (hrs/week)": physical_activity,
-            "Alcohol Intake (drinks/week)": alcohol_intake,
-            "Stress Level": stress_level,
-            "MRI Score": mri_result
-        }
 
 # PDF download button
 if st.button(" Generate Report"):
