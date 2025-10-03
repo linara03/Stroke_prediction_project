@@ -388,10 +388,14 @@ def render_assessment_page():
                 st.download_button(" Download PDF", pdf_file, file_name="stroke_report.pdf", mime="application/pdf")
 
     st.markdown("---")
-    st.caption(
-        "ℹ️ This system is intended for health awareness and preliminary risk assessment. "
-        "It does not provide a medical diagnosis. Always consult a qualified healthcare professional for"
-        " medical advice and treatment decisions.")
+    st.markdown(
+        """
+        <p style="color:#000000; margin-top:8px;">
+        ℹ️ This system is intended for health awareness and preliminary risk assessment. It does not provide a medical diagnosis. Always consult a qualified healthcare professional for medical advice and treatment decisions.
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 # Router: decide which page to render
